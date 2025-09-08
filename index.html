@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Precios - Cariñito Photo Booth</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #fce7f3 0%, #a7f3d0 50%, #bfdbfe 100%);
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .service-card {
+            transition: all 0.4s ease;
+            transform: translateY(0);
+        }
+        
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+        
+        .price-display {
+            background: linear-gradient(135deg, #ec4899, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #f472b6, #34d399);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(244, 114, 182, 0.4);
+        }
+        
+        .floating-hearts {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            animation: float 6s ease-in-out infinite;
+            opacity: 0.3;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        
+        .event-tab {
+            transition: all 0.3s ease;
+        }
+        
+        .event-tab.active {
+            background: linear-gradient(135deg, #f472b6, #34d399);
+            color: white;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen relative">
+    <div class="floating-hearts">
+        <div class="heart" style="left: 10%; animation-delay: 0s;">💖</div>
+        <div class="heart" style="left: 20%; animation-delay: 1s;">📸</div>
+        <div class="heart" style="left: 30%; animation-delay: 2s;">🎉</div>
+        <div class="heart" style="left: 40%; animation-delay: 3s;">✨</div>
+        <div class="heart" style="left: 50%; animation-delay: 4s;">💕</div>
+        <div class="heart" style="left: 60%; animation-delay: 5s;">🎊</div>
+        <div class="heart" style="left: 70%; animation-delay: 1.5s;">💖</div>
+        <div class="heart" style="left: 80%; animation-delay: 2.5s;">📷</div>
+        <div class="heart" style="left: 90%; animation-delay: 3.5s;">🎈</div>
+    </div>
+
+    <div class="container mx-auto px-4 py-8 relative z-10">
+        <div class="text-center mb-12">
+            <div class="glass-effect rounded-3xl p-8 mb-8">
+                <h1 class="text-5xl md:text-6xl font-bold text-gray-800 mb-4">
+                    💖 Cariñito Photo Booth 📸
+                </h1>
+                <p class="text-2xl text-gray-700 mb-6">¡Captura momentos mágicos en tu evento!</p>
+                <div class="w-32 h-2 bg-gradient-to-r from-pink-400 to-emerald-400 mx-auto rounded-full"></div>
+            </div>
+        </div>
+
+        <div class="flex justify-center mb-6">
+            <a href="Brochure_Empresas.pdf" download="Brochure_Empresas.pdf" class="btn-primary text-white font-bold py-3 px-6 rounded-2xl shadow-lg flex items-center space-x-2 transform hover:scale-105 transition-transform">
+                <span>📄</span>
+                <span>Descargar folleto</span>
+            </a>
+        </div>
+
+        <div class="flex justify-center mb-8">
+            <div class="glass-effect rounded-2xl p-2 flex space-x-2">
+                <button onclick="switchEventType('social')" id="social-tab" class="event-tab active px-6 py-3 rounded-xl font-semibold transition-all">
+                    🎉 Eventos Sociales
+                </button>
+                <button onclick="switchEventType('corporate')" id="corporate-tab" class="event-tab px-6 py-3 rounded-xl font-semibold text-gray-700 hover:bg-white/20">
+                    🏢 Eventos Corporativos
+                </button>
+            </div>
+        </div>
+
+        <div class="glass-effect rounded-3xl p-6 mb-8">
+            <h3 class="text-2xl font-bold text-center text-gray-800 mb-6">✨ Todos nuestros servicios incluyen:</h3>
+            <div id="main-included-services" class="grid md:grid-cols-2 gap-4 text-sm">
+                </div>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 space-y-6">
+                <div class="service-card bg-white/90 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-pink-200">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-r from-pink-400 to-rose-400 rounded-2xl flex items-center justify-center mr-4 shadow-lg">
+                            <span class="text-3xl">🎈</span>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-800">Cabina Inflable con LED</h3>
+                            <p class="text-gray-600" id="inflable-description">Perfecta para bodas, XV años, graduaciones</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-3">Duración del evento</label>
+                            <div class="grid grid-cols-2 gap-3" id="inflable-duration">
+                                </div>
+                        </div>
+                        
+                        <div id="inflable-additional" class="hidden">
+                            <label class="block text-sm font-semibold text-gray-700 mb-3">Horas adicionales</label>
+                            <div class="flex items-center space-x-3">
+                                <button onclick="changeAdditional('inflable', -1)" class="w-12 h-12 bg-pink-100 hover:bg-pink-200 rounded-full flex items-center justify-center transition-colors">
+                                    <span class="text-xl font-bold text-pink-600">-</span>
+                                </button>
+                                <span id="inflable-additional-hours" class="text-2xl font-bold text-gray-800 w-16 text-center">0</span>
+                                <button onclick="changeAdditional('inflable', 1)" class="w-12 h-12 bg-pink-100 hover:bg-pink-200 rounded-full flex items-center justify-center transition-colors">
+                                    <span class="text-xl font-bold text-pink-600">+</span>
+                                </button>
+                                <span class="text-sm text-gray-600 ml-2" id="inflable-additional-price">$900 + IVA c/u</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="service-card bg-white/90 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-emerald-200">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-2xl flex items-center justify-center mr-4 shadow-lg">
+                            <span class="text-3xl">🌟</span>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-800">Plataforma 360° Infinity</h3>
+                            <p class="text-gray-600">Experiencia inmersiva y videos espectaculares</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-3">Duración del evento</label>
+                            <div class="grid grid-cols-2 gap-3" id="platform-duration">
+                                </div>
+                        </div>
+                        
+                        <div id="platform-additional" class="hidden">
+                            <label class="block text-sm font-semibold text-gray-700 mb-3">Horas adicionales</label>
+                            <div class="flex items-center space-x-3">
+                                <button onclick="changeAdditional('platform', -1)" class="w-12 h-12 bg-emerald-100 hover:bg-emerald-200 rounded-full flex items-center justify-center transition-colors">
+                                    <span class="text-xl font-bold text-emerald-600">-</span>
+                                </button>
+                                <span id="platform-additional-hours" class="text-2xl font-bold text-gray-800 w-16 text-center">0</span>
+                                <button onclick="changeAdditional('platform', 1)" class="w-12 h-12 bg-emerald-100 hover:bg-emerald-200 rounded-full flex items-center justify-center transition-colors">
+                                    <span class="text-xl font-bold text-emerald-600">+</span>
+                                </button>
+                                <span class="text-sm text-gray-600 ml-2" id="platform-additional-price">$1,000 + IVA c/u</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="service-card bg-white/90 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-purple-200">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-400 rounded-2xl flex items-center justify-center mr-4 shadow-lg">
+                            <span class="text-3xl">✨</span>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-800">Magic Mirror 64"</h3>
+                            <p class="text-gray-600">Espejo mágico interactivo de lujo</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-3">Duración del evento</label>
+                            <div class="grid grid-cols-2 gap-3" id="mirror-duration">
+                                </div>
+                        </div>
+                        
+                        <div id="mirror-additional" class="hidden">
+                            <label class="block text-sm font-semibold text-gray-700 mb-3">Horas adicionales</label>
+                            <div class="flex items-center space-x-3">
+                                <button onclick="changeAdditional('mirror', -1)" class="w-12 h-12 bg-purple-100 hover:bg-purple-200 rounded-full flex items-center justify-center transition-colors">
+                                    <span class="text-xl font-bold text-purple-600">-</span>
+                                </button>
+                                <span id="mirror-additional-hours" class="text-2xl font-bold text-gray-800 w-16 text-center">0</span>
+                                <button onclick="changeAdditional('mirror', 1)" class="w-12 h-12 bg-purple-100 hover:bg-purple-200 rounded-full flex items-center justify-center transition-colors">
+                                    <span class="text-xl font-bold text-purple-600">+</span>
+                                </button>
+                                <span class="text-sm text-gray-600 ml-2" id="mirror-additional-price">$900 + IVA c/u</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="banner-section" class="service-card bg-white/90 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-blue-200">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-2xl flex items-center justify-center mr-4 shadow-lg">
+                            <span class="text-3xl">🎯</span>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-800">Shimmer Wall o Banner Personalizado</h3>
+                            <p class="text-gray-600" id="banner-description">A partir de $2,500 (según medidas)</p>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-3">¿Agregar Shimmer Wall o Banner?</label>
+                        <div class="flex space-x-3">
+                            <button onclick="toggleBanner(true)" id="banner-yes" class="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-xl font-semibold hover:bg-gray-200 transition-colors">
+                                Sí, incluir
+                            </button>
+                            <button onclick="toggleBanner(false)" id="banner-no" class="flex-1 btn-primary text-white py-3 px-4 rounded-xl font-semibold">
+                                No incluir
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-1">
+                <div class="sticky top-8">
+                    <div class="glass-effect rounded-3xl p-6 text-gray-800">
+                        <h2 class="text-3xl font-bold mb-6 text-center">💰 Cotización</h2>
+                        
+                        <div class="space-y-4 mb-6" id="price-breakdown">
+                            <p class="text-center text-gray-600">Selecciona un servicio para ver el precio</p>
+                        </div>
+                        
+                        <div class="bg-white/30 rounded-2xl p-6 mb-4">
+                            <div class="text-center">
+                                <p class="text-sm opacity-80 mb-2">Total del Evento</p>
+                                <p id="grand-total" class="text-5xl font-bold price-display">$0</p>
+                                <p id="iva-note" class="text-xs mt-2 opacity-70">* No incluye I.V.A.</p>
+                            </div>
+                        </div>
+
+                        <p id="discount-note" class="hidden text-center text-pink-700 font-semibold mb-4">
+                            ⭐ Por contratar 2 servicios o más para tu evento, tenemos un descuento especial para ti! Contáctanos por WhatsApp para conocer más y reclamar tu beneficio!
+                        </p>
+                        
+                        <button onclick="generateQuote()" class="w-full btn-primary text-white font-bold py-4 px-6 rounded-2xl shadow-lg mb-3">
+                            📋 Generar Cotización
+                        </button>
+                        
+                        <button onclick="resetCalculator()" class="w-full bg-white/30 text-gray-800 font-semibold py-3 px-6 rounded-2xl hover:bg-white/40 transition-colors">
+                            🔄 Reiniciar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-effect rounded-3xl p-8 mt-12">
+            <h2 class="text-4xl font-bold text-center text-gray-800 mb-8">💌 ¡Contáctanos!</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-4">📞 Información de Contacto</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-3"><span class="text-2xl">📱</span><div><p class="font-semibold">WhatsApp Business</p><p class="text-gray-600">+52 55 51907875</p></div></div>
+                        <div class="flex items-center space-x-3"><span class="text-2xl">📧</span><div><p class="font-semibold">Email</p><p class="text-gray-600">carinito.photobooth@gmail.com</p></div></div>
+                        <div class="flex items-center space-x-3"><span class="text-2xl">📍</span><div><p class="font-semibold">Ubicación</p><p class="text-gray-600">Ciudad de México</p></div></div>
+                        <div class="flex items-center space-x-3"><span class="text-2xl">📷</span><div><p class="font-semibold">Instagram</p><p class="text-gray-600">@carinito_photobooth</p></div></div>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-2xl mb-6">
+                        <div class="flex items-center space-x-2 mb-2"><span class="text-2xl">📱</span><p class="font-semibold text-green-800">¡Contacto directo por WhatsApp!</p></div>
+                        <p class="text-sm text-green-700">Completa el formulario y te llevará directo a nuestro WhatsApp Business con toda tu información.</p>
+                    </div>
+                    
+                    <form id="contact-form" class="space-y-4">
+                        <div><label class="block text-sm font-semibold text-gray-700 mb-2">Nombre completo *</label><input type="text" id="name" required class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-pink-400 focus:outline-none transition-colors"></div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label class="block text-sm font-semibold text-gray-700 mb-2">Teléfono *</label><input type="tel" id="phone" required class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-pink-400 focus:outline-none transition-colors"></div>
+                            <div><label class="block text-sm font-semibold text-gray-700 mb-2">Email</label><input type="email" id="email" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-pink-400 focus:outline-none transition-colors"></div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label class="block text-sm font-semibold text-gray-700 mb-2">Fecha del evento</label><input type="date" id="event-date" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-pink-400 focus:outline-none transition-colors"></div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Tipo de evento</label>
+                                <select id="event-type" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-pink-400 focus:outline-none transition-colors">
+                                    <option value="">Seleccionar...</option><option value="boda">Boda</option><option value="xv">XV Años</option><option value="graduacion">Graduación</option><option value="corporativo">Evento Corporativo</option><option value="otro">Otro</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div><label class="block text-sm font-semibold text-gray-700 mb-2">Mensaje</label><textarea id="message" rows="4" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-pink-400 focus:outline-none transition-colors" placeholder="Cuéntanos más sobre tu evento..."></textarea></div>
+                        <button type="submit" class="w-full btn-primary text-white font-bold py-4 px-6 rounded-2xl shadow-lg">📱 Enviar por WhatsApp</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="quote-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+            <div class="bg-white rounded-3xl p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto">
+                <h3 class="text-3xl font-bold text-gray-800 mb-6 text-center">📋 Cotización Detallada</h3>
+                <div id="quote-content" class="space-y-4 text-gray-700 mb-6"></div>
+                <div class="flex space-x-3">
+                    <button onclick="closeQuote()" class="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-xl hover:bg-gray-200 transition-colors font-semibold">Cerrar</button>
+                    <button onclick="sendQuoteToWhatsApp()" class="flex-1 btn-primary text-white py-3 px-4 rounded-xl font-semibold">📱 Contactar por WhatsApp</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="success-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+            <div class="bg-white rounded-3xl p-8 max-w-md w-full text-center">
+                <div class="text-6xl mb-4">✅</div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">¡Te llevamos a WhatsApp!</h3>
+                <p class="text-gray-600 mb-4">Se está abriendo WhatsApp con toda tu información.</p>
+                <div class="bg-blue-50 p-4 rounded-xl mb-4">
+                    <p class="text-sm text-blue-800"><strong>💡 Si no se abre automáticamente:</strong></p>
+                    <p class="text-sm text-blue-700">• Permite ventanas emergentes en tu navegador</p>
+                    <p class="text-sm text-blue-700">• O contacta directamente: <strong>+52 55 51907875</strong></p>
+                </div>
+                <button onclick="closeSuccessModal()" class="btn-primary text-white font-bold py-3 px-6 rounded-xl">¡Perfecto!</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ... (El código JavaScript no necesita cambios, por lo que no lo incluyo aquí para brevedad) ...
+        // ====== Variables iniciales ======
+      let currentEventType = 'social';
+      let selectedServices = {};
+      let additionalHours = { inflable: 0, platform: 0, mirror: 0 };
+      let includeBanner = false;
+
+      const socialPrices = {
+          inflable: { 2: 3500, 3: 4500 },
+          platform: { 2: 4200, 3: 5100 },
+          mirror: { 2: 5900, 3: 6800 }
+      };
+
+      const corporatePrices = {
+          inflable: { 3: 5499, additional: 900 },
+          platform: { 3: 6500, additional: 750 },
+          mirror: { 3: 8499, additional: 900 }
+      };
+
+      const socialIncludes = [
+          "Plantillas personalizadas", "Fotos impresas al instante en formato tira", "Código QR para compartir al instante en redes sociales",
+          "Alfombra roja y mesa con props", "Material digital (fotos y GIFs)", "Montaje y desmontaje"
+      ];
+
+      const corporateIncludes = [
+          "Animaciones y 2 plantillas personalizadas", "Backdrop: Fondo Inflable LED o Chroma Key", "Fotos impresas al instante en formato tira o postal",
+          "Código QR para compartir tu marca al instante en redes sociales", "Alfombra roja y mesa con props", "Material digital (fotos y GIFs)",
+          "Landing page personalizada", "Montaje y desmontaje"
+      ];
+
+      const corporateBoldBullets = [
+          "Animaciones y 2 plantillas personalizadas", "Backdrop: Fondo Inflable LED o Chroma Key", 
+          "Fotos impresas al instante en formato tira o postal", "Landing page personalizada"
+      ];
+
+      // ====== Funciones UI y lógica ======
+      function switchEventType(type) {
+          currentEventType = type;
+          document.getElementById('social-tab').classList.toggle('active', type === 'social');
+          document.getElementById('corporate-tab').classList.toggle('active', type === 'corporate');
+          
+          if (type === 'social') {
+              document.getElementById('social-tab').className = 'event-tab active px-6 py-3 rounded-xl font-semibold transition-all';
+              document.getElementById('corporate-tab').className = 'event-tab px-6 py-3 rounded-xl font-semibold text-gray-700 hover:bg-white/20';
+          } else {
+              document.getElementById('corporate-tab').className = 'event-tab active px-6 py-3 rounded-xl font-semibold transition-all';
+              document.getElementById('social-tab').className = 'event-tab px-6 py-3 rounded-xl font-semibold text-gray-700 hover:bg-white/20';
+          }
+
+          updateServiceOptions();
+          resetCalculator();
+      }
+
+      function updateServiceOptions() {
+          if (currentEventType === 'social') {
+              document.getElementById('inflable-duration').innerHTML = `<button onclick="selectDuration('inflable', 2)" class="duration-btn duration-btn-inflable-2 bg-gray-100 text-gray-700 py-3 px-4 rounded-xl font-semibold hover:bg-gray-200">2 horas - $3,500</button><button onclick="selectDuration('inflable', 3)" class="duration-btn duration-btn-inflable-3 bg-gray-100 text-gray-700 py-3 px-4 rounded-xl font-semibold hover:bg-gray-200">3 horas - $4,500</button>`;
+              document.getElementById('platform-duration').innerHTML = `<button onclick="selectDuration('platform', 2)" class="duration-btn duration-btn-platform-2 bg-gray-100 text-gray-700 py-3 px-4 rounded-xl font-semibold hover:bg-gray-200">2 horas - $4,200</button><button onclick="selectDuration('platform', 3)" class="duration-btn duration-btn-platform-3 bg-gray-100 text-gray-700 py-3 px-4 rounded-xl font-semibold hover:bg-gray-200">3 horas - $5,100</button>`;
+              document.getElementById('mirror-duration').innerHTML = `<button onclick="selectDuration('mirror', 2)" class="duration-btn duration-btn-mirror-2 bg-gray-100 text-gray-700 py-3 px-4 rounded-xl font-semibold hover:bg-gray-200">2 horas - $5,900</button><button onclick="selectDuration('mirror', 3)" class="duration-btn duration-btn-mirror-3 bg-gray-100 text-gray-700 py-3 px-4 rounded-xl font-semibold hover:bg-gray-200">3 horas - $6,800</button>`;
+              document.getElementById('inflable-description').textContent = 'Perfecta para bodas, XV años, graduaciones';
+              document.getElementById('banner-description').textContent = 'A partir de $2,500 (según medidas)';
+              document.getElementById('inflable-additional-price').textContent = '$900 + IVA c/u';
+              document.getElementById('platform-additional-price').textContent = '$1,000 + IVA c/u';
+              document.getElementById('mirror-additional-price').textContent = '$900 + IVA c/u';
+              renderIncludedServices(socialIncludes);
+          } else { // Corporate
+              document.getElementById('inflable-duration').innerHTML = `<button onclick="selectDuration('inflable', 3)" class="duration-btn duration-btn-inflable-3 bg-gray-100 text-gray-700 py-3 px-4 rounded-xl font-semibold hover:bg-gray-200">3 horas - $5,499</button>`;
+              document.getElementById('platform-duration').innerHTML = `<button onclick="selectDuration('platform', 3)" class="duration-btn duration-btn-platform-3 bg-gray-100 text-gray-700 py-3 px-4 rounded-xl font-semibold hover:bg-gray-200">3 horas - $6,500</button>`;
+              document.getElementById('mirror-duration').innerHTML = `<button onclick="selectDuration('mirror', 3)" class="duration-btn duration-btn-mirror-3 bg-gray-100 text-gray-700 py-3 px-4 rounded-xl font-semibold hover:bg-gray-200">3 horas - $8,499</button>`;
+              document.getElementById('inflable-description').textContent = 'Ideal para eventos de marca, lanzamientos, activaciones';
+              document.getElementById('banner-description').textContent = 'Se recomienda para mayor visibilidad de marca';
+              document.getElementById('inflable-additional-price').textContent = '$900 + IVA c/u';
+              document.getElementById('platform-additional-price').textContent = '$750 + IVA c/u';
+              document.getElementById('mirror-additional-price').textContent = '$900 + IVA c/u';
+              renderIncludedServices(corporateIncludes);
+          }
+      }
+
+      function renderIncludedServices(services) {
+          const container = document.getElementById('main-included-services');
+          container.innerHTML = '';
+          let html = '';
+          const icon = currentEventType === 'corporate' ? '🔥' : '⭐';
+          
+          services.forEach(item => {
+              const isBold = currentEventType === 'corporate' && corporateBoldBullets.includes(item);
+              const content = isBold ? `<span class="font-bold text-gray-800">${item}</span>` : `<span class="text-gray-700">${item}</span>`;
+
+              html += `<div class="flex items-center">
+                              <span class="mr-2">${icon}</span>
+                              <span class="text-green-500 mr-2">✓</span>
+                              <span class="ml-2">${content}</span>
+                           </div>`;
+          });
+          container.innerHTML = html;
+      }
+
+      function selectDuration(service, hours) {
+          document.querySelectorAll('.duration-btn').forEach(btn => {
+              if (btn.className.includes(`duration-btn-${service}`)) {
+                  btn.classList.remove('btn-primary', 'text-white');
+                  btn.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+              }
+          });
+          document.querySelector(`.duration-btn-${service}-${hours}`).classList.add('btn-primary', 'text-white');
+          document.querySelector(`.duration-btn-${service}-${hours}`).classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+          
+          const prices = currentEventType === 'social' ? socialPrices : corporatePrices;
+          selectedServices[service] = {
+              duration: hours,
+              price: prices[service][hours],
+              additionalPrice: corporatePrices[service].additional || (service === 'platform' ? 1000 : 900)
+          };
+          document.getElementById(`${service}-additional`).classList.remove('hidden');
+          additionalHours[service] = 0;
+          document.getElementById(`${service}-additional-hours`).textContent = '0';
+          updateTotals();
+      }
+
+      function changeAdditional(service, change) {
+          if (!selectedServices[service]) return;
+          additionalHours[service] = Math.max(0, additionalHours[service] + change);
+          document.getElementById(`${service}-additional-hours`).textContent = additionalHours[service];
+          updateTotals();
+      }
+
+      function toggleBanner(include) {
+          includeBanner = include;
+          const yesBtn = document.getElementById('banner-yes');
+          const noBtn = document.getElementById('banner-no');
+          if (include) {
+              yesBtn.classList.add('btn-primary', 'text-white');
+              yesBtn.classList.remove('bg-gray-100', 'text-gray-700');
+              noBtn.classList.remove('btn-primary', 'text-white');
+              noBtn.classList.add('bg-gray-100', 'text-gray-700');
+          } else {
+              noBtn.classList.add('btn-primary', 'text-white');
+              noBtn.classList.remove('bg-gray-100', 'text-gray-700');
+              yesBtn.classList.remove('btn-primary', 'text-white');
+              yesBtn.classList.add('bg-gray-100', 'text-gray-700');
+          }
+          updateTotals();
+      }
+
+      function updateTotals() {
+          let total = 0;
+          let breakdownHtml = '';
+          let selectedCount = 0;
+          for (const serviceId in selectedServices) {
+              const service = selectedServices[serviceId];
+              let serviceTotal = service.price;
+              let serviceName = '';
+              switch(serviceId) {
+                  case 'inflable': serviceName = 'Cabina Inflable'; break;
+                  case 'platform': serviceName = 'Plataforma 360° Infinity'; break;
+                  case 'mirror': serviceName = 'Magic Mirror 64"'; break;
+              }
+              if (additionalHours[serviceId] > 0) {
+                  serviceTotal += additionalHours[serviceId] * service.additionalPrice;
+                  breakdownHtml += `<div class="flex justify-between items-center py-2 border-b border-gray-200/80"><span class="font-semibold">${serviceName} (${service.duration}h + ${additionalHours[serviceId]}h extra)</span><span class="font-bold">$${serviceTotal.toLocaleString()}</span></div>`;
+              } else {
+                  breakdownHtml += `<div class="flex justify-between items-center py-2 border-b border-gray-200/80"><span class="font-semibold">${serviceName} (${service.duration} horas)</span><span class="font-bold">$${serviceTotal.toLocaleString()}</span></div>`;
+              }
+              total += serviceTotal;
+              selectedCount++;
+          }
+          if (includeBanner) {
+              total += 2500;
+              breakdownHtml += `<div class="flex justify-between items-center py-2 border-b border-gray-200/80"><span class="font-semibold">Shimmer Wall / Banner</span><span class="font-bold">$${(2500).toLocaleString()}</span></div>`;
+              selectedCount++;
+          }
+          document.getElementById('price-breakdown').innerHTML = selectedCount === 0 ? `<p class="text-center text-gray-600">Selecciona un servicio para ver el precio</p>` : breakdownHtml;
+          document.getElementById('grand-total').textContent = `$${total.toLocaleString()}`;
+          document.getElementById('discount-note').classList.toggle('hidden', selectedCount < 2);
+      }
+
+      function resetCalculator() {
+          selectedServices = {};
+          additionalHours = { inflable: 0, platform: 0, mirror: 0 };
+          includeBanner = false;
+
+          document.querySelectorAll('.duration-btn').forEach(btn => {
+              btn.classList.remove('btn-primary', 'text-white');
+              btn.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+          });
+
+          ['inflable', 'platform', 'mirror'].forEach(service => {
+              document.getElementById(`${service}-additional`).classList.add('hidden');
+              document.getElementById(`${service}-additional-hours`).textContent = '0';
+          });
+
+          toggleBanner(false);
+          updateTotals();
+      }
+
+      function generateQuote() {
+          const quoteContent = document.getElementById('quote-content');
+          let quoteHtml = '';
+          let finalPrice = 0;
+          let count = 0;
+          for (const serviceId in selectedServices) {
+              const service = selectedServices[serviceId];
+              let serviceTotal = service.price;
+              let serviceName = '';
+              switch(serviceId) {
+                  case 'inflable': serviceName = 'Cabina Inflable'; break;
+                  case 'platform': serviceName = 'Plataforma 360° Infinity'; break;
+                  case 'mirror': serviceName = 'Magic Mirror 64"'; break;
+              }
+              if (additionalHours[serviceId] > 0) {
+                  serviceTotal += additionalHours[serviceId] * service.additionalPrice;
+                  quoteHtml += `<p><strong>${serviceName}:</strong> ${service.duration}h base + ${additionalHours[serviceId]}h extra = <strong>$${serviceTotal.toLocaleString()}</strong></p>`;
+              } else {
+                  quoteHtml += `<p><strong>${serviceName}:</strong> ${service.duration} horas = <strong>$${serviceTotal.toLocaleString()}</strong></p>`;
+              }
+              finalPrice += serviceTotal;
+              count++;
+          }
+          if (includeBanner) {
+              finalPrice += 2500;
+              quoteHtml += `<p><strong>Shimmer Wall / Banner:</strong> <strong>$${(2500).toLocaleString()}</strong></p>`;
+              count++;
+          }
+          if (finalPrice === 0) {
+              quoteContent.innerHTML = '<p class="text-center">Por favor, selecciona al menos un servicio.</p>';
+          } else {
+              quoteHtml += `<hr class="my-4"><p class="text-xl font-bold text-center">Total estimado: <span class="price-display">$${finalPrice.toLocaleString()}</span></p>`;
+              quoteHtml += `<p class="text-center text-sm text-gray-500 mt-1">* Precios sin I.V.A.</p>`;
+              if (count >= 2) {
+                  quoteHtml += `<p class="text-center text-pink-700 font-semibold mt-4">⭐ ¡Tienes un descuento especial por contratar 2 o más servicios! Contáctanos.</p>`;
+              }
+              quoteContent.innerHTML = quoteHtml;
+          }
+          document.getElementById('quote-modal').style.display = 'flex';
+      }
+
+      function closeQuote() { document.getElementById('quote-modal').style.display = 'none'; }
+
+      function sendQuoteToWhatsApp() {
+          if (Object.keys(selectedServices).length === 0 && !includeBanner) {
+              const genericMessage = "¡Hola! Me gustaría recibir más información sobre sus servicios para mi evento.";
+              const whatsappUrl = `https://wa.me/525551907875?text=${encodeURIComponent(genericMessage)}`;
+              window.open(whatsappUrl, '_blank');
+              document.getElementById('success-modal').style.display = 'flex';
+              return;
+          }
+          let message = "¡Hola! Generé esta cotización y quiero más información\n\n";
+          const eventTypeName = currentEventType === 'social' ? 'Evento Social' : 'Evento Corporativo';
+          message += `*Cariñito Photo Booth*\n*Cotización para ${eventTypeName}*\n\n`;
+          let total = 0;
+          let serviceCount = 0;
+          for (const serviceId in selectedServices) {
+              const service = selectedServices[serviceId];
+              let serviceTotal = service.price;
+              let serviceName = '';
+              let duration = service.duration;
+              switch(serviceId) {
+                  case 'inflable': serviceName = 'Cabina Inflable con LED'; break;
+                  case 'platform': serviceName = 'Plataforma 360° Infinity'; break;
+                  case 'mirror': serviceName = 'Magic Mirror 64"'; break;
+              }
+              if (additionalHours[serviceId] > 0) {
+                  serviceTotal += additionalHours[serviceId] * service.additionalPrice;
+                  duration += additionalHours[serviceId];
+              }
+              message += `• *${serviceName}* (${duration}h): $${serviceTotal.toLocaleString()}\n`;
+              total += serviceTotal;
+              serviceCount++;
+          }
+          if (includeBanner) {
+              total += 2500;
+              message += `• *Shimmer Wall / Banner*: $${(2500).toLocaleString()}\n`;
+              serviceCount++;
+          }
+          message += `\n*TOTAL: $${total.toLocaleString()}* (No incluye I.V.A.)\n\n`;
+          message += `*Incluye:*\n`;
+          const includesList = currentEventType === 'social' ? socialIncludes : corporateIncludes;
+          includesList.forEach(item => { message += `${item}\n`; });
+          message += "\n";
+          if (serviceCount >= 2) {
+              message += "Por contratar 2 servicios o más para tu evento, tenemos un descuento especial para ti!\n\n";
+          }
+          message += "¿Podrías darme más información sobre disponibilidad y detalles?";
+          const whatsappUrl = `https://wa.me/525551907875?text=${encodeURIComponent(message)}`;
+          window.open(whatsappUrl, '_blank');
+          closeQuote();
+          document.getElementById('success-modal').style.display = 'flex';
+      }
+      
+      document.getElementById('contact-form').addEventListener('submit', function(event) {
+          event.preventDefault();
+          const name = document.getElementById('name').value, phone = document.getElementById('phone').value, email = document.getElementById('email').value, eventDate = document.getElementById('event-date').value, eventType = document.getElementById('event-type').value, msg = document.getElementById('message').value;
+          let whatsappMessage = `Hola, mi nombre es ${name}.`;
+          if (phone) whatsappMessage += ` Mi teléfono es ${phone}.`;
+          if (email) whatsappMessage += ` Mi email es ${email}.`;
+          if (eventDate) whatsappMessage += ` Tengo un evento el ${eventDate}`;
+          if (eventType) whatsappMessage += ` (tipo: ${eventType}).`;
+          if (msg) whatsappMessage += `\n\nMensaje: ${msg}`;
+          whatsappMessage += `\n\nMe gustaría recibir más información sobre sus servicios.`;
+          const whatsappUrl = `https://wa.me/525551907875?text=${encodeURIComponent(whatsappMessage)}`;
+          window.open(whatsappUrl, '_blank');
+          document.getElementById('success-modal').style.display = 'flex';
+      });
+
+      function closeSuccessModal() { document.getElementById('success-modal').style.display = 'none'; }
+
+      document.addEventListener('DOMContentLoaded', () => {
+          switchEventType('social');
+      });
+    </script>
+</body>
+</html>
